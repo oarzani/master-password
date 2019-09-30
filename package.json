@@ -1,0 +1,23 @@
+{
+  "name": "33d165c",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oarzani/master-password.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oarzani/master-password/issues"
+  },
+  "homepage": "https://github.com/oarzani/master-password#readme",
+  "devDependencies": {
+    "eslint": "^6.5.0",
+    "prettier": "^1.18.2"
+  }
+}
