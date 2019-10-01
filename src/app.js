@@ -1,5 +1,6 @@
 const { executeCommand } = require("./lib/commands");
 const readline = require("readline");
+const crypto = require("crypto");
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -107,14 +108,15 @@ const [action, key, value] = userArgv;
 //   command(key, value);
 // }
 
-const masterPassword = "abc";
+const masterPasswordHash =
+  "696b1eaf04369604657016c039ecf829$11826216c0ae28249bf1d45d6faf1e79ba9be4fc80ea7ca8e5fa0a41a6889015"; //Hash aus der createHash.js generiert
 rl.question("What is the master-password? ", password => {
-  if (password === masterPassword) {
-    executeCommand(action, key, value);
+  rl.output.write("\n");
+  if (verifyHash(password, masterPasswordHash)) {
+    executeCommand(password, action, key, value);
   } else {
     console.log("invalid password");
   }
-
   rl.close();
 });
 
@@ -122,3 +124,14 @@ rl.question("What is the master-password? ", password => {
 rl._writeToOutput = function _writeToOutput() {
   rl.output.write("*");
 };
+
+// Checking the password hash
+function verifyHash(password, original) {
+  const originalHash = original.split("$")[1];
+  const salt = original.split("$")[0];
+  const hash = crypto
+    .pbkdf2Sync(password, salt, 2048, 32, "sha512")
+    .toString("hex");
+
+  return hash === originalHash;
+}
