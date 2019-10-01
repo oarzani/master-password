@@ -6,6 +6,7 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
+const fs = require("fs");
 
 /* commands 
 set {key} {value}
@@ -107,9 +108,9 @@ const [action, key, value] = userArgv;
 //   }
 //   command(key, value);
 // }
-
-const masterPasswordHash =
-  "696b1eaf04369604657016c039ecf829$11826216c0ae28249bf1d45d6faf1e79ba9be4fc80ea7ca8e5fa0a41a6889015"; //Hash aus der createHash.js generiert
+const fileName = ".password";
+const masterPasswordHash = fs.readFileSync(fileName, "utf-8");
+("696b1eaf04369604657016c039ecf829$11826216c0ae28249bf1d45d6faf1e79ba9be4fc80ea7ca8e5fa0a41a6889015"); //Hash aus der createHash.js generiert
 rl.question("What is the master-password? ", password => {
   rl.output.write("\n");
   if (verifyHash(password, masterPasswordHash)) {
