@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Master Password</title>
+  </head>
+  <body>
+    <h1>Welcome to Master Password</h1>
+    <input type="text" id="secretInput" placeholder="type" />
+    <button id="submit">Submit</button>
+    <div id="div1">The text above has been created dynamically.</div>
+    <script>
+      const secretInput = document.querySelector("#secretInput");
+      const submit = document.querySelector("#submit");
+
+      // function handleClick() {
+      //   addElement;
+      //   console.log(secretInput.value);
+      // }
+      submit.addEventListener("click", handleClick);
+
+      function addElement() {
+        // create a new div element
+        let newDiv = document.createElement("div");
+        // and give it some content
+        let newContent = document.createTextNode(`${secretInput.value}`);
+        // add the text node to the newly created div
+        newDiv.appendChild(newContent);
+
+        // add the newly created element and its content into the DOM
+        let currentDiv = document.getElementById("div1");
+        document.body.insertBefore(newDiv, currentDiv);
+      }
+      function handleClick() {
+        addElement();
+        console.log(secretInput.value);
+      }
+    </script>
+  </body>
+</html>
