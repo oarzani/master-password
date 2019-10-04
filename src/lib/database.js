@@ -21,7 +21,7 @@ async function getCollection(collectionName) {
   if (!db) {
     await initDatabase();
   }
-  return db.collecion(collectionName);
+  return db.collection(collectionName);
 }
 
 exports.initDatabase = initDatabase;

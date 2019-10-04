@@ -1,4 +1,4 @@
-const { readSecrets, writeSecrets } = require("./secret");
+// const { readSecrets, writeSecrets } = require("./secret");
 const crypto = require("crypto");
 const { getCollection } = require("./database");
 //siehe Beispiel Ressources
@@ -11,7 +11,12 @@ async function set(password, key, value) {
   const cryptoKey = crypto.createCipher("aes-128-cbc", password);
   let encryptedValue = cryptoKey.update(value, "utf8", "hex");
   encryptedValue += cryptoKey.final("hex");
-  await secretsCollection.insertOne({ key, value: encryptedValue });
+
+  await secretsCollection.updateOne(
+    { key },
+    { $set: { value: encryptedValue } },
+    { upsert: true }
+  );
   // const secrets = readSecrets();
   // secrets[key] = encryptedValue;
   // writeSecrets(secrets);
@@ -32,11 +37,11 @@ async function get(password, key) {
   //Find secrets
   const secret = await secretsCollection.findOne({ key });
 
-  const secrets = await readSecrets();
-  const secret = secrets[key];
+  // const secrets = await readSecrets();
+  // const secret = secrets[key];
 
   const cryptoKey = crypto.createDecipher("aes-128-cbc", password);
-  let decryptedSecret = cryptoKey.update(secret, "hex", "utf8");
+  let decryptedSecret = cryptoKey.update(secret.value, "hex", "utf8");
   decryptedSecret += cryptoKey.final("utf8");
 
   return decryptedSecret;

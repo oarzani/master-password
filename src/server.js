@@ -1,35 +1,10 @@
 // create Webserver
-// const { readSecrets } = require("./lib/secret");
-// const loadJson = readSecrets();
 
 const http = require("http");
-// const server = http.createServer(function(request, response) {
-//   response.writeHead(200, { "Content-Type": "text/plain" });
-//   response.end(JSON.stringify(loadJson));
-// });
-
-// Einrichten von Mongodb beispiel w3 ressorces
-// const MongoClient = require("mongodb").MongoClient;
-// const mongodburl = "mongodb://localhost:27017/mydb";
-
-// MongoClient.connect(mongodburl, function(err, db) {
-//   if (err) throw err;
-//   console.log("Database created!");
-//   db.close();
-// });
-// MongoClient.connect(mongodburl, function(err, db) {
-//   if (err) throw err;
-//   let dbo = db.db("mydb");
-//   dbo.createCollection("Letssee", function(err, res) {
-//     if (err) throw err;
-//     console.log("Collection created!");
-//     db.close();
-//   });
-// });
 
 //Beispiel oben ruft nur die JSON auf
 const fs = require("fs");
-const { get, set } = require("./lib/commands");
+const { get, set, unset } = require("./lib/commands");
 const url = require("url");
 const { initDatabase } = require("./lib/database");
 
@@ -50,7 +25,7 @@ const server = http.createServer(async function(request, response) {
     const key = pathname;
     const res = key.slice(1);
     if (request.method === "GET") {
-      const secret = get("leon", res);
+      const secret = await get("leon", res);
       response.write(secret);
     } else if (request.method === "POST") {
       let body = "";
@@ -60,9 +35,12 @@ const server = http.createServer(async function(request, response) {
       });
       request.on("end", async function() {
         console.log("Body: " + body);
-        set("leon", res, body);
+        await set("leon", res, body);
         response.end(`Set ${res}`);
       });
+    } else if (request.method === "DELETE") {
+      await unset("leon", res);
+      response.end(`Delete ${res}`);
     }
   } catch (error) {
     response.write("Unknown URL");
