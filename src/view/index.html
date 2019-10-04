@@ -18,15 +18,15 @@
       />
       <button>Get Secret</button>
     </form>
+    <div id="showSecret"></div>
     <p>Everybody have them</p>
     <p>Dont be so shy</p>
     <!-- Form für die zwei neuen Inputfelder -->
     <form id="addForm">
       <input type="text" id="keyInput" placeholder="key" />
-      <input type="text" id="valueInput" placeholder="value" />
+      <input type="password" id="valueInput" placeholder="value" />
       <button>CreateSecret</button>
     </form>
-    <div id="showSecret"></div>
 
     <script>
       const secretInput = document.querySelector("#secretInput");
@@ -51,9 +51,15 @@
       function handleCreate(event) {
         event.preventDefault();
 
-        const secret = {};
-        secret[keyInput.value] = valueInput.value;
-        console.log(secret);
+        const url = `/${keyInput.value}`;
+        fetch(url, {
+          method: "POST",
+          body: valueInput.value
+        });
+
+        // const secret = {};
+        // secret[keyInput.value] = valueInput.value;
+        // console.log(secret);
       }
       // async function handleSubmit(event) {
       //   event.preventDefault();
@@ -64,6 +70,7 @@
       // }
 
       submitForm.addEventListener("submit", handleSubmit);
+      addForm.addEventListener("submit", handleCreate);
     </script>
   </body>
 </html>

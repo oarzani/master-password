@@ -1,25 +1,38 @@
 const { readSecrets, writeSecrets } = require("./secret");
 const crypto = require("crypto");
-
+const { getCollection } = require("./database");
 //siehe Beispiel Ressources
-function set(password, key, value) {
+
+async function set(password, key, value) {
+  const secretsCollection = await getCollection("secrets");
+
+  // Updated or insert secfet
+
   const cryptoKey = crypto.createCipher("aes-128-cbc", password);
   let encryptedValue = cryptoKey.update(value, "utf8", "hex");
   encryptedValue += cryptoKey.final("hex");
-
-  const secrets = readSecrets();
-  secrets[key] = encryptedValue;
-  writeSecrets(secrets);
+  await secretsCollection.insertOne({ key, value: encryptedValue });
+  // const secrets = readSecrets();
+  // secrets[key] = encryptedValue;
+  // writeSecrets(secrets);
 }
 
-function unset(password, key) {
-  const secrets = readSecrets();
-  delete secrets[key];
-  writeSecrets(secrets);
+async function unset(password, key) {
+  const secretsCollection = await getCollection("secrets");
+  await secretsCollection.deleteOne({ key });
+
+  // Delete secret
+  // const secrets = readSecrets();
+  // delete secrets[key];
+  // writeSecrets(secrets);
 }
 
-function get(password, key) {
-  const secrets = readSecrets();
+async function get(password, key) {
+  const secretsCollection = await getCollection("secrets");
+  //Find secrets
+  const secret = await secretsCollection.findOne({ key });
+
+  const secrets = await readSecrets();
   const secret = secrets[key];
 
   const cryptoKey = crypto.createDecipher("aes-128-cbc", password);
